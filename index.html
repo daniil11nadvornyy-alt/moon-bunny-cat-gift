@@ -1,0 +1,415 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#211b3d">
+  <title>Маленькая вселенная для тебя</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --ink: #fff8ff;
+      --soft: #e8dafa;
+      --pink: #ffb8d5;
+      --lilac: #cbb3ff;
+      --night: #211b3d;
+      --card: rgba(44, 35, 72, .76);
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      overflow-x: hidden;
+      color: var(--ink);
+      font-family: "Trebuchet MS", "Segoe UI", sans-serif;
+      background:
+        radial-gradient(ellipse at 50% 100%, #73588f 0, transparent 52%),
+        radial-gradient(ellipse at 12% 20%, #473d70 0, transparent 38%),
+        linear-gradient(160deg, #17172f, var(--night) 55%, #352749);
+    }
+
+    button { font: inherit; }
+
+    .sky {
+      position: fixed;
+      inset: 0;
+      overflow: hidden;
+      pointer-events: none;
+      z-index: -1;
+    }
+
+    .star {
+      position: absolute;
+      width: 3px;
+      height: 3px;
+      border-radius: 50%;
+      background: white;
+      opacity: .75;
+      box-shadow: 0 0 10px 2px #fff;
+      animation: twinkle 3s ease-in-out infinite alternate;
+    }
+
+    .moon {
+      position: absolute;
+      top: 8vh;
+      right: 12vw;
+      width: clamp(70px, 12vw, 130px);
+      aspect-ratio: 1;
+      border-radius: 50%;
+      background: #fff0c9;
+      box-shadow: 0 0 45px 12px #ffe8bb66, 0 0 120px 25px #d8b8ff33;
+    }
+
+    main {
+      width: min(100% - 32px, 760px);
+      margin: 0 auto;
+      padding: 42px 0 54px;
+      text-align: center;
+    }
+
+    .eyebrow {
+      margin: 0 0 10px;
+      color: var(--pink);
+      font-size: .8rem;
+      font-weight: 700;
+      letter-spacing: .22em;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      margin: 0;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: clamp(2.2rem, 7vw, 4.4rem);
+      font-weight: 500;
+      line-height: 1.06;
+      text-shadow: 0 3px 25px #ffb8d566;
+    }
+
+    .subtitle {
+      max-width: 440px;
+      margin: 16px auto 0;
+      color: var(--soft);
+      font-size: clamp(1rem, 2.5vw, 1.12rem);
+      line-height: 1.7;
+    }
+
+    .scene {
+      position: relative;
+      display: grid;
+      min-height: 255px;
+      place-items: center;
+      margin: 18px auto 5px;
+    }
+
+    .characters {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: clamp(8px, 3vw, 28px);
+      width: 100%;
+    }
+
+    .friend {
+      position: relative;
+      display: block;
+      width: clamp(112px, 28vw, 205px);
+      aspect-ratio: 1;
+      overflow: hidden;
+      filter: drop-shadow(0 10px 9px #100d2570) drop-shadow(0 0 13px #ffcfdf35);
+      transform-origin: bottom center;
+    }
+
+    .friend img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .friend.bunny { animation: bunny-hop 3.2s ease-in-out infinite; }
+    .friend.cat { animation: cat-sway 4s ease-in-out infinite; animation-delay: -1.2s; }
+
+    .friend::after {
+      position: absolute;
+      top: 5%;
+      right: -9%;
+      color: #ffe4a9;
+      content: "✦";
+      font-size: 1.5rem;
+      animation: twinkle 2s ease-in-out infinite alternate;
+    }
+
+    .heart {
+      align-self: center;
+      margin: 0 -14px 22px;
+      color: #ffb5d0;
+      font-size: clamp(1.5rem, 6vw, 2.6rem);
+      animation: heartbeat 1.6s ease-in-out infinite;
+    }
+
+    .firefly {
+      position: absolute;
+      color: #fff0ad;
+      font-size: 1rem;
+      text-shadow: 0 0 12px #fff0ad;
+      animation: drift 5s ease-in-out infinite alternate;
+    }
+
+    .firefly.one { left: 13%; top: 30%; }
+    .firefly.two { right: 13%; top: 44%; animation-delay: -2s; }
+    .firefly.three { left: 24%; bottom: 12%; animation-delay: -3s; }
+
+    .note {
+      position: relative;
+      max-width: 570px;
+      margin: 0 auto;
+      padding: clamp(22px, 5vw, 36px);
+      border: 1px solid #ead7ff2e;
+      border-radius: 26px;
+      background: var(--card);
+      box-shadow: 0 20px 70px #100d254d, inset 0 1px #ffffff12;
+      backdrop-filter: blur(12px);
+    }
+
+    .note::before {
+      position: absolute;
+      top: -12px;
+      left: 50%;
+      width: 24px;
+      height: 24px;
+      border-radius: 6px;
+      background: #32284f;
+      content: "";
+      transform: translateX(-50%) rotate(45deg);
+    }
+
+    .note h2 {
+      position: relative;
+      margin: 0 0 13px;
+      color: #ffe0ed;
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: clamp(1.5rem, 5vw, 2rem);
+      font-weight: 500;
+    }
+
+    .note p {
+      margin: 0;
+      color: #f0e7fb;
+      font-size: 1rem;
+      line-height: 1.8;
+    }
+
+    .signoff {
+      display: block;
+      margin-top: 17px;
+      color: var(--pink);
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: 1.2rem;
+      font-style: italic;
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      gap: 12px;
+      margin-top: 24px;
+    }
+
+    .button {
+      min-height: 48px;
+      padding: 12px 20px;
+      border: 1px solid #ffffff38;
+      border-radius: 999px;
+      color: var(--ink);
+      background: #ffffff10;
+      cursor: pointer;
+      transition: transform .2s ease, background .2s ease, box-shadow .2s ease;
+    }
+
+    .button:hover {
+      background: #ffffff20;
+      box-shadow: 0 5px 24px #ffb8d533;
+      transform: translateY(-2px);
+    }
+
+    .button:focus-visible {
+      outline: 3px solid #ffe3a8;
+      outline-offset: 3px;
+    }
+
+    .button.primary {
+      border-color: transparent;
+      color: #3a2340;
+      background: linear-gradient(110deg, #ffd2df, #e3c9ff);
+      font-weight: 700;
+    }
+
+    .surprise {
+      min-height: 1.6em;
+      margin: 17px 0 0;
+      color: #ffe2ac;
+      font-size: .98rem;
+    }
+
+    footer {
+      margin-top: 25px;
+      color: #d7c9e9a8;
+      font-size: .8rem;
+      letter-spacing: .04em;
+    }
+
+    .sparkle {
+      position: fixed;
+      z-index: 2;
+      pointer-events: none;
+      animation: burst 850ms ease-out forwards;
+    }
+
+    @keyframes twinkle {
+      from { opacity: .35; transform: scale(.8); }
+      to { opacity: 1; transform: scale(1.25); }
+    }
+
+    @keyframes bob {
+      0%, 100% { transform: translateY(0) rotate(-2deg); }
+      50% { transform: translateY(-10px) rotate(2deg); }
+    }
+
+    @keyframes bunny-hop {
+      0%, 100% { transform: translateY(0) rotate(-2deg); }
+      18% { transform: translateY(-15px) rotate(2deg); }
+      34% { transform: translateY(0) rotate(0); }
+      48% { transform: translateY(-5px) rotate(-1deg); }
+      62% { transform: translateY(0) rotate(0); }
+    }
+
+    @keyframes cat-sway {
+      0%, 100% { transform: translateY(0) rotate(2deg); }
+      50% { transform: translateY(-8px) rotate(-2deg); }
+    }
+
+    @keyframes heartbeat {
+      0%, 100% { transform: scale(1); }
+      15% { transform: scale(1.2); }
+      30% { transform: scale(1); }
+      45% { transform: scale(1.12); }
+    }
+
+    @keyframes drift {
+      to { transform: translate(12px, -16px); opacity: .35; }
+    }
+
+    @keyframes burst {
+      to { opacity: 0; transform: translate(var(--dx), var(--dy)) rotate(35deg) scale(.4); }
+    }
+
+    @media (max-width: 480px) {
+      main { padding-top: 32px; }
+      .scene { min-height: 210px; }
+      .moon { top: 6vh; right: 8vw; }
+      .firefly.one { left: 4%; }
+      .firefly.two { right: 5%; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: .01ms !important;
+        animation-iteration-count: 1 !important;
+        scroll-behavior: auto !important;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="sky" aria-hidden="true">
+    <div class="moon"></div>
+  </div>
+
+  <main>
+    <p class="eyebrow">секретная доставка из лунного леса</p>
+    <h1>Маленькая<br>вселенная для тебя</h1>
+    <p class="subtitle">Там, где коты охраняют звёзды, а зайцы собирают для тебя самые нежные мечты.</p>
+
+    <section class="scene" aria-label="Зайчик и котик под звёздным небом">
+      <span class="firefly one" aria-hidden="true">✧</span>
+      <span class="firefly two" aria-hidden="true">✦</span>
+      <span class="firefly three" aria-hidden="true">✧</span>
+      <div class="characters" aria-hidden="true">
+        <span class="friend bunny"><img src="bunny.png" alt="Милый нарисованный зайчик"></span>
+        <span class="heart">♡</span>
+        <span class="friend cat"><img src="cat.png" alt="Котик с баночкой"></span>
+      </div>
+    </section>
+
+    <article class="note">
+      <h2>Письмо от зайца и кота</h2>
+      <p>
+        Они долго выбирали подарок и решили подарить тебе кое-что волшебное:
+        напоминание о том, какая ты замечательная. Пусть каждый день приносит
+        тебе уют, смешные моменты, сладости без повода и мечты, которые
+        обязательно сбываются. А если вдруг станет грустно — знай, где-то рядом
+        есть два маленьких пушистых фаната, которые болеют за тебя всем сердцем.
+      </p>
+      <span class="signoff">Обнимаем лапками ♡</span>
+      <div class="actions">
+        <button class="button primary" id="wish-button" type="button">Поймать желание ✨</button>
+        <button class="button" id="hug-button" type="button">Получить обнимашку ♡</button>
+      </div>
+      <p class="surprise" id="surprise" aria-live="polite"></p>
+    </article>
+
+    <footer>создано с теплом, щепоткой магии и двумя очень важными лапками</footer>
+  </main>
+
+  <script>
+    const wishes = [
+      "Пусть сегодня случится что-то очень-очень хорошее 🌷",
+      "Желание принято! Зайчик уже записал его на звёздную почту 🌠",
+      "Котик мурчит: ты справишься со всем, что задумала 🐾",
+      "Твоя улыбка официально признана чудом этой галактики ✨",
+      "Впереди тебя ждёт день, который захочется сохранить в памяти 💫"
+    ];
+    const surprise = document.querySelector("#surprise");
+
+    function makeSparkles(x, y) {
+      for (let i = 0; i < 9; i += 1) {
+        const sparkle = document.createElement("span");
+        sparkle.className = "sparkle";
+        sparkle.textContent = ["✦", "♡", "✧"][i % 3];
+        sparkle.style.left = `${x}px`;
+        sparkle.style.top = `${y}px`;
+        sparkle.style.color = ["#ffe3a8", "#ffb8d5", "#d7c3ff"][i % 3];
+        sparkle.style.setProperty("--dx", `${(Math.random() - 0.5) * 150}px`);
+        sparkle.style.setProperty("--dy", `${(Math.random() - 0.7) * 140}px`);
+        document.body.append(sparkle);
+        window.setTimeout(() => sparkle.remove(), 900);
+      }
+    }
+
+    document.querySelector("#wish-button").addEventListener("click", (event) => {
+      surprise.textContent = wishes[Math.floor(Math.random() * wishes.length)];
+      makeSparkles(event.clientX, event.clientY);
+    });
+
+    document.querySelector("#hug-button").addEventListener("click", (event) => {
+      surprise.textContent = "Крепкое-крепкое объятие! 🐰🤍🐱";
+      makeSparkles(event.clientX, event.clientY);
+    });
+
+    const sky = document.querySelector(".sky");
+    for (let i = 0; i < 48; i += 1) {
+      const star = document.createElement("span");
+      star.className = "star";
+      star.style.left = `${Math.random() * 100}%`;
+      star.style.top = `${Math.random() * 100}%`;
+      star.style.animationDelay = `${Math.random() * 4}s`;
+      star.style.animationDuration = `${2 + Math.random() * 3}s`;
+      sky.append(star);
+    }
+  </script>
+</body>
+</html>
